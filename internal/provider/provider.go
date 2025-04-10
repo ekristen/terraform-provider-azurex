@@ -157,9 +157,9 @@ func (p *AzurexProvider) Configure(ctx context.Context, req provider.ConfigureRe
 			return
 		}
 		providerContext.IdentityCreds = creds
-	} else if os.Getenv("ARM_CLIENT_FEDERATED_TOKEN_FILE") != "" {
+	} else if os.Getenv("AZURE_FEDERATED_TOKEN_FILE") != "" {
 		tflog.Debug(ctx, "authentication type: federated token")
-		token, err := os.ReadFile(os.Getenv("ARM_CLIENT_FEDERATED_TOKEN_FILE"))
+		token, err := os.ReadFile(os.Getenv("AZURE_FEDERATED_TOKEN_FILE"))
 		if err != nil {
 			resp.Diagnostics.AddError("unable to configure credential", fmt.Sprintf("got: %s", err.Error()))
 			return
@@ -169,8 +169,8 @@ func (p *AzurexProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 		creds, err := azidentity.NewWorkloadIdentityCredential(&azidentity.WorkloadIdentityCredentialOptions{
 			TenantID:      data.TenantID.ValueString(),
-			ClientID:      os.Getenv("ARM_CLIENT_ID"),
-			TokenFilePath: os.Getenv("ARM_CLIENT_FEDERATED_TOKEN_FILE"),
+			ClientID:      os.Getenv("AZURE_CLIENT_ID"),
+			TokenFilePath: os.Getenv("AZURE_FEDERATED_TOKEN_FILE"),
 		})
 		if err != nil {
 			resp.Diagnostics.AddError("unable to configure credential", fmt.Sprintf("got: %s", err.Error()))
